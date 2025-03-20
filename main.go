@@ -54,6 +54,7 @@ func addTools(s *server.MCPServer) {
 	s.AddTool(website.CreateWebsiteTool, website.CreateWebsiteHandle)
 	s.AddTool(ssl.ListSSLsTool, ssl.ListSSLHandle)
 	s.AddTool(app.InstallMySQLTool, app.InstallMySQLHandle)
+	s.AddTool(app.InstallOpenRestyTool, app.InstallOpenRestyHandle)
 }
 
 func runServer(transport string, port int64) error {
