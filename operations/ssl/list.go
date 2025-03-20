@@ -18,12 +18,11 @@ var ListSSLsTool = mcp.NewTool(
 )
 
 func ListSSLHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	apiUrl := "/websites/ssl/search"
 	req := &types.PageRequest{
 		Page:     1,
 		PageSize: 500,
 	}
-	client := utils.NewPanelClient("POST", apiUrl, utils.WithPayload(req))
+	client := utils.NewPanelClient("POST", "/websites/ssl/search", utils.WithPayload(req))
 	listWebsiteSSLRes := &types.ListWebsiteSSLRes{}
 	return client.Request(listWebsiteSSLRes)
 }

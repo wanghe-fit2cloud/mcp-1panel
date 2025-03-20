@@ -45,9 +45,8 @@ func InstallOpenRestyHandle(ctx context.Context, request mcp.CallToolRequest) (*
 		httpsPort = 443
 	}
 
-	getOpenRestyUrl := "/apps/openresty"
 	appRes := &types.AppRes{}
-	_, err := utils.NewPanelClient("GET", getOpenRestyUrl).Request(appRes)
+	_, err := utils.NewPanelClient("GET", "/apps/openresty").Request(appRes)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +61,6 @@ func InstallOpenRestyHandle(ctx context.Context, request mcp.CallToolRequest) (*
 
 	appDetailID := appDetailRes.Data.ID
 
-	apiUrl := "/apps/install"
 	req := &types.AppInstallCreate{
 		AppDetailID: appDetailID,
 		Name: name,
@@ -71,7 +69,7 @@ func InstallOpenRestyHandle(ctx context.Context, request mcp.CallToolRequest) (*
 			"PANEL_APP_PORT_HTTPS": httpsPort,
 		},
 	}
-	client := utils.NewPanelClient("POST", apiUrl, utils.WithPayload(req))
+	client := utils.NewPanelClient("POST", "/apps/install", utils.WithPayload(req))
 	res := &types.Response{}
 	return client.Request(res)
 }

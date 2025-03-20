@@ -38,9 +38,8 @@ func InstallMySQLHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.
 			version = ""
 		}
 	} 
-	getMysqlUrl := "/apps/mysql"
 	appRes := &types.AppRes{}
-	_, err := utils.NewPanelClient("GET", getMysqlUrl).Request(appRes)
+	_, err := utils.NewPanelClient("GET", "/apps/mysql").Request(appRes)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +80,6 @@ func InstallMySQLHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.
 		rootPassword = fmt.Sprintf("mysql_%s", utils.GetRandomStr(6))
 	}
 
-	apiUrl := "/apps/install"
 	req := &types.AppInstallCreate{
 		AppDetailID: appDetailID,
 		Name: name,
@@ -90,7 +88,7 @@ func InstallMySQLHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.
 			"PANEL_DB_ROOT_PASSWORD": rootPassword,
 		},
 	}
-	client := utils.NewPanelClient("POST", apiUrl, utils.WithPayload(req))
+	client := utils.NewPanelClient("POST", "/apps/install", utils.WithPayload(req))
 	res := &types.Response{}
 	return client.Request(res)
 }
