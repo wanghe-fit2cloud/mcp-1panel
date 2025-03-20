@@ -9,7 +9,6 @@ import (
 	"mcp-1panel/utils"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/mark3labs/mcp-go/server"
 )
@@ -25,10 +24,8 @@ func setupLogger() (*os.File, error) {
 		return nil, err
 	}
 
-	logFileName := fmt.Sprintf("mcp-1panel_%s.log", time.Now().Format("2006-01-02"))
-	logFilePath := filepath.Join(logDir, logFileName)
-
-	logFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	logFilePath := filepath.Join(logDir, "mcp-1panel.log")
+	logFile, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		fmt.Printf("open log file error: %v\n", err)
 		return nil, err

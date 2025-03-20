@@ -2,6 +2,7 @@ package website
 
 import (
 	"context"
+	"errors"
 	"mcp-1panel/operations/types"
 	"mcp-1panel/utils"
 
@@ -15,17 +16,22 @@ const (
 var CreateWebsiteTool = mcp.NewTool(CreateWebsite,
 	mcp.WithDescription("create website"),
 	mcp.WithString("domain", mcp.Description("domain"), mcp.Required()),
-	mcp.WithString("alias", mcp.Description("alias")),
 	mcp.WithString("website_type", mcp.Description("website type,only support static and proxy"), mcp.Required()),
+	mcp.WithString("proxy_address", mcp.Description("proxy address,only support for proxy website"), mcp.Required()),
 )
 
 func CreateWebsiteHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	if request.Params.Arguments["domain"] == nil {
+		return nil, errors.New("domain is required")
+	}
 	domain := request.Params.Arguments["domain"].(string)
-	var alias string
-	if request.Params.Arguments["alias"] != nil {
-		alias = request.Params.Arguments["alias"].(string)
-	} else {
-		alias = domain
+	alias := domain
+	var proxyAddress string
+	if request.Params.Arguments["website_type"] == "proxy" {
+		if request.Params.Arguments["proxy_address"] == nil {
+			return nil, errors.New("proxy_address is required")
+		}
+		proxyAddress = request.Params.Arguments["proxy_address"].(string)
 	}
 
 	groupUrl := "/groups/search"
@@ -52,6 +58,7 @@ func CreateWebsiteHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp
 		Alias:          alias,
 		Type:           request.Params.Arguments["website_type"].(string),
 		WebsiteGroupID: groupID,
+		Proxy:          proxyAddress,
 	}
 	createCli := utils.NewPanelClient("POST", createUrl, utils.WithPayload(req))
 	res := &types.Response{}
