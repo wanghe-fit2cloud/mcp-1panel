@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"mcp-1panel/operations/app"
+	"mcp-1panel/operations/ssl"
 	"mcp-1panel/operations/system"
 	"mcp-1panel/operations/website"
 	"mcp-1panel/utils"
@@ -50,6 +52,8 @@ func addTools(s *server.MCPServer) {
 	s.AddTool(system.GetDashboardInfoTool, system.GetDashboardInfoHandle)
 	s.AddTool(website.ListWebsitesTool, website.ListWebsiteHandle)
 	s.AddTool(website.CreateWebsiteTool, website.CreateWebsiteHandle)
+	s.AddTool(ssl.ListSSLsTool, ssl.ListSSLHandle)
+	s.AddTool(app.InstallMySQLTool, app.InstallMySQLHandle)
 }
 
 func runServer(transport string, port int64) error {
