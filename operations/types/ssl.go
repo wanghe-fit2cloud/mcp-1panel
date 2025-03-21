@@ -2,14 +2,12 @@ package types
 
 import "time"
 
-type WebsiteSSLDTO struct {
-	PageResult
-	Items []WebsiteSSL `json:"items"`
-}
-
 type ListWebsiteSSLRes struct {
 	Response
-	Data WebsiteSSLDTO `json:"data"`
+	Data struct {
+		PageResult
+		Items []WebsiteSSL `json:"items"`
+	} `json:"data"`
 }
 
 type WebsiteSSL struct {
@@ -51,12 +49,10 @@ type Acme struct {
 
 type ListDNSAccountRes struct {
 	Response
-	Data DNSAccountDTO `json:"data"`
-}
-
-type DNSAccountDTO struct {
-	PageResult
-	Items []DNSAccount `json:"items"`
+	Data struct {
+		PageResult
+		Items []DNSAccount `json:"items"`
+	} `json:"data"`
 }
 
 type DNSAccount struct {

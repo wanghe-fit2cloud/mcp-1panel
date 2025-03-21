@@ -25,12 +25,6 @@ type AppDetailRes struct {
 type AppDetail struct {
 	ID       uint   `json:"id"`
 }
-
-type AppInstallDTO struct {
-	PageResult
-	Items []AppInstall `json:"items"`
-}
-
 type AppInstall struct {
 	ID            uint      `json:"id"`
 	Name          string    `json:"name"`
@@ -41,5 +35,8 @@ type AppInstall struct {
 
 type AppInstalledListResponse struct {
 	Response
-	Data  AppInstallDTO `json:"data"`
+	Data struct {
+		PageResult
+		Items []AppInstall `json:"items"`
+	} `json:"data"`
 }

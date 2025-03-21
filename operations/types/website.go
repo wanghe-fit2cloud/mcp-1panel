@@ -2,14 +2,12 @@ package types
 
 import "time"
 
-type Website struct {
-	PageResult
-	Items []WebsiteRes `json:"items"`
-}
-
 type ListWebsiteRes struct {
 	Response
-	Data Website `json:"data"`
+	Data struct {
+		PageResult
+		Items []WebsiteRes `json:"items"`
+	} `json:"data"`
 }
 
 type ListWebsiteRequest struct {

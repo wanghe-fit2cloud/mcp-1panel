@@ -34,13 +34,11 @@ func CreateWebsiteHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp
 		proxyAddress = request.Params.Arguments["proxy_address"].(string)
 	}
 
-	groupUrl := "/groups/search"
 	groupReq := &types.GroupRequest{
 		Type: "website",
 	}
 	groupRes := &types.GroupRes{}
-	client := utils.NewPanelClient("POST", groupUrl, utils.WithPayload(groupReq))
-	_, err := client.Request(groupRes)
+	_, err := utils.NewPanelClient("POST", "/groups/search", utils.WithPayload(groupReq)).Request(groupRes)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +50,6 @@ func CreateWebsiteHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp
 		}
 	}
 
-	createUrl := "/websites"
 	req := &types.CreateWebsiteRequest{
 		PrimaryDomain:  domain,
 		Alias:          alias,
@@ -60,7 +57,6 @@ func CreateWebsiteHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp
 		WebsiteGroupID: groupID,
 		Proxy:          proxyAddress,
 	}
-	createCli := utils.NewPanelClient("POST", createUrl, utils.WithPayload(req))
 	res := &types.Response{}
-	return createCli.Request(res)
+	return utils.NewPanelClient("POST", "/websites", utils.WithPayload(req)).Request(res)
 }

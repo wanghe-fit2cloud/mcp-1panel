@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"mcp-1panel/operations/app"
+	"mcp-1panel/operations/database"
 	"mcp-1panel/operations/ssl"
 	"mcp-1panel/operations/system"
 	"mcp-1panel/operations/website"
@@ -57,6 +58,8 @@ func addTools(s *server.MCPServer) {
 	s.AddTool(app.InstallOpenRestyTool, app.InstallOpenRestyHandle)
 	s.AddTool(app.ListInstalledAppsTool, app.ListInstalledAppsHandle)
 	s.AddTool(ssl.CreateSSLTool, ssl.CreateSSLHandle)
+	s.AddTool(database.ListDatabasesTool, database.ListDatabasesHandle)
+	s.AddTool(database.CreateDatabaseTool, database.CreateDatabaseHandle)
 }
 
 func runServer(transport string, port int64) error {
