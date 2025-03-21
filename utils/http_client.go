@@ -47,7 +47,6 @@ func GetAccessToken() string {
 		SetAccessToken(token)
 		return accessToken
 	}
-	SetAccessToken("3n0U15xCO7ONObll0rm8Fi2sKZtoDsHF")
 	return accessToken
 }
 
@@ -59,7 +58,6 @@ func GetApiBase() string {
 		SetHost(host)
 		return apiBase
 	}
-	SetHost("http://192.168.1.2:8888")
 	return apiBase
 }
 
