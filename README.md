@@ -31,6 +31,8 @@
 ## Usage
 
 **Cursor** and **Windsurf** configuration example:
+
+### stdio
 ```json
 {
   "mcpServers": {
@@ -40,6 +42,17 @@
         "PANEL_ACCESS_TOKEN": "<your 1Panel access token>",
         "PANEL_HOST": "such as http://localhost:8080"
       }
+    }
+  }
+}
+```
+
+### sse
+```json
+{
+  "mcpServers": {
+    "mcp-1panel": {
+        "url": "http://localhost:8000/sse"
     }
   }
 }
