@@ -51,7 +51,7 @@
 
 start mcp server through sse
 ```
-mcp-1panel -host <your 1Panel access address> -token <your 1Panel access token> -transport sse
+mcp-1panel -host <your 1Panel access address> -token <your 1Panel access token> -transport sse -addr "http://localhost:8000"
 ```
 
 ```json
@@ -69,7 +69,7 @@ mcp-1panel -host <your 1Panel access address> -token <your 1Panel access token> 
 - `-token`: 1Panel access token
 - `-host`: 1Panel access address
 - `-transport`: Transport type (stdio or sse, default: stdio)
-- `-sse-port`: Start SSE server port (default: 8000)
+- `-addr`: Start SSE server addr (default:http://localhost:8000)
 
 ### Environment Variables
 

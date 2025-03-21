@@ -62,14 +62,21 @@ func addTools(s *server.MCPServer) {
 	s.AddTool(database.CreateDatabaseTool, database.CreateDatabaseHandle)
 }
 
-func runServer(transport string, port int64) error {
+
+
+
+func runServer(transport string, addr string) error {
 	mcpServer := newMCPServer()
 	addTools(mcpServer)
 
 	if transport == "sse" {
-		log.Printf("SSE server listening on :%d", port)
-		sseServer := server.NewSSEServer(mcpServer, server.WithBaseURL(fmt.Sprintf("http://localhost:%d", port)))
-		if err := sseServer.Start(fmt.Sprintf(":%d", port)); err != nil {
+		port,err  := utils.GetPortFromAddr(addr)
+		if err != nil {
+			return err
+		}
+		log.Printf("SSE server listening on :%s", port)
+		sseServer := server.NewSSEServer(mcpServer,server.WithBaseURL(addr))
+		if err := sseServer.Start(fmt.Sprintf(":%s", port)); err != nil {
 			log.Fatalf("Server error: %v", err)
 		}
 	} else {
@@ -86,10 +93,10 @@ func main() {
 		transport   string
 		accessToken string
 		host        string
-		seePort     int64
+		addr     	string
 	)
 	flag.StringVar(&transport, "transport", "sse", "Transport type (stdio or sse)")
-	flag.Int64Var(&seePort, "sse-port", 8000, "The port to start the sse server on")
+	flag.StringVar(&addr, "addr", "http://localhost:8000", "The base URL for mcp Server")
 	flag.StringVar(&accessToken, "token", "", "1Panel api key")
 	flag.StringVar(&host, "host", "", "1Panel host (example:http://127.0.0.1:9999)")
 	flag.Parse()
@@ -108,7 +115,7 @@ func main() {
 		utils.SetHost(host)
 	}
 
-	if err := runServer(transport, seePort); err != nil {
+	if err := runServer(transport, addr); err != nil {
 		fmt.Printf("server run error: %v\n", err)
 		panic(err)
 	}

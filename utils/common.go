@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"math/rand"
+	"net/url"
 	"strings"
 )
 
@@ -14,4 +16,19 @@ func GetRandomStr(e int) string {
 		result.WriteByte(charset[index])
 	}
 	return result.String()
+}
+
+func GetPortFromAddr(addr string) (string, error) {
+	parsedURL, err := url.Parse(addr)
+	if err != nil {
+		return "", err
+	}
+
+	hostPort := parsedURL.Host
+	if strings.Contains(hostPort, ":") {
+		parts := strings.Split(hostPort, ":")
+		return parts[len(parts)-1], nil
+	}
+
+	return "", fmt.Errorf("port not found")
 }
