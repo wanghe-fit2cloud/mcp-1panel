@@ -32,7 +32,7 @@
 
 **Cursor** and **Windsurf** configuration example:
 
-### stdio
+### stdio mode
 ```json
 {
   "mcpServers": {
@@ -47,7 +47,13 @@
 }
 ```
 
-### sse
+### sse mode
+
+start mcp server through sse
+```
+mcp-1panel -host <your 1Panel access address> -token <your 1Panel access token> -transport sse
+```
+
 ```json
 {
   "mcpServers": {
