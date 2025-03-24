@@ -21,7 +21,8 @@ type CreateWebsiteRequest struct {
 	Alias          string `json:"alias"`
 	Type           string `json:"type"`
 	WebsiteGroupID uint   `json:"websiteGroupId"`
-	Proxy   	string `json:"proxy"`
+	Proxy          string `json:"proxy"`
+	AppType        string `json:"appType"`
 }
 
 type GroupRequest struct {

@@ -56,6 +56,7 @@ func CreateWebsiteHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp
 		Type:           request.Params.Arguments["website_type"].(string),
 		WebsiteGroupID: groupID,
 		Proxy:          proxyAddress,
+		AppType:        "new",
 	}
 	res := &types.Response{}
 	return utils.NewPanelClient("POST", "/websites", utils.WithPayload(req)).Request(res)
