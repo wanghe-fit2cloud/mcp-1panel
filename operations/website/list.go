@@ -2,8 +2,8 @@ package website
 
 import (
 	"context"
-	"mcp-1panel/operations/types"
-	"mcp-1panel/utils"
+	"github.com/1Panel-dev/mcp-1panel/operations/types"
+	"github.com/1Panel-dev/mcp-1panel/utils"
 
 	"github.com/mark3labs/mcp-go/mcp"
 )
@@ -13,8 +13,8 @@ const (
 )
 
 var ListWebsitesTool = mcp.NewTool(
-	ListWebsites, 
-	mcp.WithDescription("list websites"), 
+	ListWebsites,
+	mcp.WithDescription("list websites"),
 	mcp.WithString("name", mcp.Description("search by website name")),
 )
 

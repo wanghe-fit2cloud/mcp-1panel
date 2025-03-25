@@ -2,8 +2,8 @@ package app
 
 import (
 	"context"
-	"mcp-1panel/operations/types"
-	"mcp-1panel/utils"
+	"github.com/1Panel-dev/mcp-1panel/operations/types"
+	"github.com/1Panel-dev/mcp-1panel/utils"
 
 	"github.com/mark3labs/mcp-go/mcp"
 )
@@ -16,6 +16,7 @@ var ListInstalledAppsTool = mcp.NewTool(
 	ListInstalledApps,
 	mcp.WithDescription("list installed apps"),
 )
+
 func ListInstalledAppsHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	req := &types.PageRequest{
 		Page:     1,

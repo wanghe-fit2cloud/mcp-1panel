@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/1Panel-dev/mcp-1panel/operations/app"
+	"github.com/1Panel-dev/mcp-1panel/operations/database"
+	"github.com/1Panel-dev/mcp-1panel/operations/ssl"
+	"github.com/1Panel-dev/mcp-1panel/operations/system"
+	"github.com/1Panel-dev/mcp-1panel/operations/website"
+	"github.com/1Panel-dev/mcp-1panel/utils"
 	"log"
-	"mcp-1panel/operations/app"
-	"mcp-1panel/operations/database"
-	"mcp-1panel/operations/ssl"
-	"mcp-1panel/operations/system"
-	"mcp-1panel/operations/website"
-	"mcp-1panel/utils"
 	"os"
 	"path/filepath"
 
@@ -41,7 +41,7 @@ func setupLogger() (*os.File, error) {
 
 func newMCPServer() *server.MCPServer {
 	return server.NewMCPServer(
-		"mcp-1panel",
+		"github.com/1Panel-dev/mcp-1panel",
 		Version,
 		server.WithToolCapabilities(true),
 		server.WithLogging(),
@@ -62,20 +62,17 @@ func addTools(s *server.MCPServer) {
 	s.AddTool(database.CreateDatabaseTool, database.CreateDatabaseHandle)
 }
 
-
-
-
 func runServer(transport string, addr string) error {
 	mcpServer := newMCPServer()
 	addTools(mcpServer)
 
 	if transport == "sse" {
-		port,err  := utils.GetPortFromAddr(addr)
+		port, err := utils.GetPortFromAddr(addr)
 		if err != nil {
 			return err
 		}
 		log.Printf("SSE server listening on :%s", port)
-		sseServer := server.NewSSEServer(mcpServer,server.WithBaseURL(addr))
+		sseServer := server.NewSSEServer(mcpServer, server.WithBaseURL(addr))
 		if err := sseServer.Start(fmt.Sprintf(":%s", port)); err != nil {
 			log.Fatalf("Server error: %v", err)
 		}
@@ -93,7 +90,7 @@ func main() {
 		transport   string
 		accessToken string
 		host        string
-		addr     	string
+		addr        string
 	)
 	flag.StringVar(&transport, "transport", "sse", "Transport type (stdio or sse)")
 	flag.StringVar(&addr, "addr", "http://localhost:8000", "The base URL for mcp Server")

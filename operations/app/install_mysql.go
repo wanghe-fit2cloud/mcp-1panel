@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"mcp-1panel/operations/types"
-	"mcp-1panel/utils"
+	"github.com/1Panel-dev/mcp-1panel/operations/types"
+	"github.com/1Panel-dev/mcp-1panel/utils"
 	"strings"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -19,9 +19,9 @@ var InstallMySQLTool = mcp.NewTool(
 	InstallMySQL,
 	mcp.WithDescription("install mysql, if not set name, default is mysql, if not set version, default is '', if not set root_password, default is '')"),
 	mcp.WithString("name", mcp.Description("mysql name")),
-	mcp.WithString("version", mcp.Description("mysql version, not support latest version"),mcp.DefaultString("")),
-	mcp.WithString("root_password", mcp.Description("mysql root password"),mcp.DefaultString("")),
-	mcp.WithNumber("port", mcp.Description("mysql port"),mcp.DefaultNumber(3306)),
+	mcp.WithString("version", mcp.Description("mysql version, not support latest version"), mcp.DefaultString("")),
+	mcp.WithString("root_password", mcp.Description("mysql root password"), mcp.DefaultString("")),
+	mcp.WithNumber("port", mcp.Description("mysql port"), mcp.DefaultNumber(3306)),
 )
 
 func InstallMySQLHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -37,7 +37,7 @@ func InstallMySQLHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.
 		if version == "latest" {
 			version = ""
 		}
-	} 
+	}
 	appRes := &types.AppRes{}
 	_, err := utils.NewPanelClient("GET", "/apps/mysql").Request(appRes)
 	if err != nil {
@@ -45,7 +45,7 @@ func InstallMySQLHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.
 	}
 	exist := false
 	for _, v := range appRes.Data.Versions {
-		if v == version  || strings.Contains(v, version){
+		if v == version || strings.Contains(v, version) {
 			version = v
 			exist = true
 			break
@@ -82,9 +82,9 @@ func InstallMySQLHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.
 
 	req := &types.AppInstallCreate{
 		AppDetailID: appDetailID,
-		Name: name,
+		Name:        name,
 		Params: map[string]interface{}{
-			"PANEL_APP_PORT_HTTP": port,
+			"PANEL_APP_PORT_HTTP":    port,
 			"PANEL_DB_ROOT_PASSWORD": rootPassword,
 		},
 	}

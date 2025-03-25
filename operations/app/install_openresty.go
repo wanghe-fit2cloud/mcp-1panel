@@ -3,8 +3,8 @@ package app
 import (
 	"context"
 	"fmt"
-	"mcp-1panel/operations/types"
-	"mcp-1panel/utils"
+	"github.com/1Panel-dev/mcp-1panel/operations/types"
+	"github.com/1Panel-dev/mcp-1panel/utils"
 
 	"github.com/mark3labs/mcp-go/mcp"
 )
@@ -63,7 +63,7 @@ func InstallOpenRestyHandle(ctx context.Context, request mcp.CallToolRequest) (*
 
 	req := &types.AppInstallCreate{
 		AppDetailID: appDetailID,
-		Name: name,
+		Name:        name,
 		Params: map[string]interface{}{
 			"PANEL_APP_PORT_HTTP":  httpPort,
 			"PANEL_APP_PORT_HTTPS": httpsPort,

@@ -308,15 +308,15 @@ func (p *PanelClient) Request(object any) (*mcp.CallToolResult, error) {
 	if err != nil {
 		switch {
 		case IsAuthError(err):
-			return mcp.NewToolResultError("Authentication failed: Please check your Panel access token"), err
+			return mcp.NewToolResultText("Authentication failed: Please check your Panel access token"), err
 		case IsNetworkError(err):
-			return mcp.NewToolResultError("Network error: Unable to connect to Panel API"), err
+			return mcp.NewToolResultText("Network error: Unable to connect to Panel API"), err
 		case IsAPIError(err):
 			var panelErr *PanelError
 			errors.As(err, &panelErr)
-			return mcp.NewToolResultError(fmt.Sprintf("API error (%d): %s", panelErr.Code, panelErr.Details)), err
+			return mcp.NewToolResultText(fmt.Sprintf("API error (%d): %s", panelErr.Code, panelErr.Details)), err
 		default:
-			return mcp.NewToolResultError(err.Error()), err
+			return mcp.NewToolResultText(err.Error()), err
 		}
 	}
 
@@ -326,18 +326,18 @@ func (p *PanelClient) Request(object any) (*mcp.CallToolResult, error) {
 
 	body, err := p.GetRespBody()
 	if err != nil {
-		return mcp.NewToolResultError(fmt.Sprintf("Failed to read response body: %s", err.Error())),
+		return mcp.NewToolResultText(fmt.Sprintf("Failed to read response body: %s", err.Error())),
 			NewInternalError(err)
 	}
 
 	if err = json.Unmarshal(body, object); err != nil {
 		errorMessage := fmt.Sprintf("Failed to parse response: %v", err)
-		return mcp.NewToolResultError(errorMessage), NewInternalError(errors.New(errorMessage))
+		return mcp.NewToolResultText(errorMessage), NewInternalError(errors.New(errorMessage))
 	}
 
 	result, err := json.MarshalIndent(object, "", "  ")
 	if err != nil {
-		return mcp.NewToolResultError(fmt.Sprintf("Failed to format response: %s", err.Error())),
+		return mcp.NewToolResultText(fmt.Sprintf("Failed to format response: %s", err.Error())),
 			NewInternalError(err)
 	}
 

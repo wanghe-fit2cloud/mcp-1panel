@@ -3,8 +3,8 @@ package database
 import (
 	"context"
 	"errors"
-	"mcp-1panel/operations/types"
-	"mcp-1panel/utils"
+	"github.com/1Panel-dev/mcp-1panel/operations/types"
+	"github.com/1Panel-dev/mcp-1panel/utils"
 
 	"github.com/mark3labs/mcp-go/mcp"
 )
@@ -16,7 +16,7 @@ const (
 var ListDatabasesTool = mcp.NewTool(
 	ListDatabases,
 	mcp.WithDescription("list databases by name"),
-	mcp.WithString("name", mcp.Description("database name"), mcp.DefaultString(""),mcp.Required()),
+	mcp.WithString("name", mcp.Description("database name"), mcp.DefaultString(""), mcp.Required()),
 )
 
 func ListDatabasesHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -32,9 +32,9 @@ func ListDatabasesHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp
 			Page:     1,
 			PageSize: 500,
 		},
-		Order:   "null",
-		OrderBy: "created_at",
-		Database:    database,
+		Order:    "null",
+		OrderBy:  "created_at",
+		Database: database,
 	}
 	databaseListRes := &types.DatabaseListResponse{}
 	client := utils.NewPanelClient("POST", "/databases/search", utils.WithPayload(pageReq))

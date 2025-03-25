@@ -3,8 +3,8 @@ package ssl
 import (
 	"context"
 	"errors"
-	"mcp-1panel/operations/types"
-	"mcp-1panel/utils"
+	"github.com/1Panel-dev/mcp-1panel/operations/types"
+	"github.com/1Panel-dev/mcp-1panel/utils"
 	"strings"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -18,7 +18,7 @@ var CreateSSLTool = mcp.NewTool(
 	CreateSSL,
 	mcp.WithDescription("create ssl"),
 	mcp.WithString("domain", mcp.Description("domain"), mcp.Required()),
-	mcp.WithString("provider", mcp.Description("provider support dnsAccount,http"), mcp.Required(),mcp.DefaultString("dnsAccount")),
+	mcp.WithString("provider", mcp.Description("provider support dnsAccount,http"), mcp.Required(), mcp.DefaultString("dnsAccount")),
 	mcp.WithString("dnsAccount", mcp.Description("dnsAccount"), mcp.DefaultString("")),
 )
 
@@ -41,7 +41,7 @@ func CreateSSLHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.Cal
 		PageSize: 500,
 	}
 	client := utils.NewPanelClient("POST", "/websites/acme/search", utils.WithPayload(pageReq))
-	_,err := client.Request(acmeRes)
+	_, err := client.Request(acmeRes)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func CreateSSLHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.Cal
 	if provider == "dnsAccount" {
 		dnsAccountRes := &types.ListDNSAccountRes{}
 		client = utils.NewPanelClient("POST", "/websites/dns/search", utils.WithPayload(pageReq))
-		_,err = client.Request(dnsAccountRes)
+		_, err = client.Request(dnsAccountRes)
 		if err != nil {
 			return nil, err
 		}

@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/base64"
 	"errors"
-	"mcp-1panel/operations/types"
-	"mcp-1panel/utils"
+	"github.com/1Panel-dev/mcp-1panel/operations/types"
+	"github.com/1Panel-dev/mcp-1panel/utils"
 
 	"github.com/mark3labs/mcp-go/mcp"
 )
@@ -13,7 +13,6 @@ import (
 const (
 	CreateDatabase = "create_database"
 )
-
 
 var CreateDatabaseTool = mcp.NewTool(
 	CreateDatabase,
@@ -27,13 +26,13 @@ var CreateDatabaseTool = mcp.NewTool(
 
 func CreateDatabaseHandle(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	var (
-		database string
-		password string
-		name string
+		database     string
+		password     string
+		name         string
 		databaseType string
-		username string
+		username     string
 	)
-	if  request.Params.Arguments["database"] == nil {
+	if request.Params.Arguments["database"] == nil {
 		return nil, errors.New("database name is required")
 	}
 	database = request.Params.Arguments["database"].(string)
@@ -50,17 +49,17 @@ func CreateDatabaseHandle(ctx context.Context, request mcp.CallToolRequest) (*mc
 	name = request.Params.Arguments["name"].(string)
 	if request.Params.Arguments["password"] == nil {
 		password = utils.GetRandomStr(12)
-	}else {
+	} else {
 		password = request.Params.Arguments["password"].(string)
 	}
 	encodedPassword := base64.StdEncoding.EncodeToString([]byte(password))
 
 	if request.Params.Arguments["username"] == nil {
 		username = name
-	}else {
+	} else {
 		username = request.Params.Arguments["username"].(string)
 	}
-	
+
 	createReq := &types.CreateDatabaseRequest{
 		Database: database,
 		Password: encodedPassword,
@@ -74,7 +73,7 @@ func CreateDatabaseHandle(ctx context.Context, request mcp.CallToolRequest) (*mc
 		createUrl = "/databases"
 		createReq.Format = "utf8mb4"
 		createReq.Permission = "%"
-	}else {
+	} else {
 		createUrl = "/databases/pg"
 		createReq.Format = "UTF8"
 	}
@@ -82,4 +81,3 @@ func CreateDatabaseHandle(ctx context.Context, request mcp.CallToolRequest) (*mc
 	res := &types.Response{}
 	return client.Request(res)
 }
-
