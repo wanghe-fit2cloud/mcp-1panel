@@ -92,7 +92,7 @@ func main() {
 		host        string
 		addr        string
 	)
-	flag.StringVar(&transport, "transport", "sse", "Transport type (stdio or sse)")
+	flag.StringVar(&transport, "transport", "stdio", "Transport type (stdio or sse)")
 	flag.StringVar(&addr, "addr", "http://localhost:8000", "The base URL for mcp Server")
 	flag.StringVar(&accessToken, "token", "", "1Panel api key")
 	flag.StringVar(&host, "host", "", "1Panel host (example:http://127.0.0.1:9999)")
