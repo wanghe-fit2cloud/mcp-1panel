@@ -98,13 +98,6 @@ func main() {
 	flag.StringVar(&host, "host", "", "1Panel host (example:http://127.0.0.1:9999)")
 	flag.Parse()
 
-	logFile, err := setupLogger()
-	if err != nil {
-		fmt.Printf("setup logger error: %v\n", err)
-		os.Exit(1)
-	}
-	defer logFile.Close()
-
 	if accessToken != "" {
 		utils.SetAccessToken(accessToken)
 	}
