@@ -6,33 +6,43 @@
 
 ### Prerequisites
 
-- Go 1.23.0 or higher
-- Existing 1Panel
+- Go 1.23.0 or higher (for binary usage)
+- Docker (for Docker usage)
+- Existing 1Panel installation
 
-### Build from Source
+### Build from Source (Binary)
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/1Panel-dev/mcp-1panel.git
    cd mcp-1panel
    ```
 
 2. Build the project:
+
    ```bash
    make build
    ```
-   Move `./build/mcp-1panel` to the system environment path.
 
-### Install using go install
-   ```bash
-   go install github.com/1Panel-dev/mcp-1panel@latest
-   ```
+   Move `./build/mcp-1panel` to a directory included in your system's PATH.
+
+### Install using `go install`
+
+```bash
+go install github.com/1Panel-dev/mcp-1panel@latest
+```
 
 ## Usage
 
-**Cursor** and **Windsurf** configuration example:
+You can use 1Panel MCP Server with tools like **Cursor** and **Windsurf**.
 
-### stdio mode
+### stdio Mode
+
+#### Binary
+
+Make sure Go is installed and the binary is built or installed:
+
 ```json
 {
   "mcpServers": {
@@ -47,12 +57,43 @@
 }
 ```
 
-### sse mode
+#### Docker
 
-start mcp server through sse
+Make sure Docker is installed:
+
+```json
+{
+  "mcpServers": {
+    "mcp-1panel": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "PANEL_HOST",
+        "-e",
+        "PANEL_ACCESS_TOKEN",
+        "1panel/1panel-mcp-server"
+      ],
+      "env": {
+        "PANEL_HOST": "such as http://localhost:8080",
+        "PANEL_ACCESS_TOKEN": "<your 1Panel access token>"
+      }
+    }
+  }
+}
 ```
+
+### SSE Mode
+
+Start the MCP server with SSE:
+
+```bash
 mcp-1panel -host <your 1Panel access address> -token <your 1Panel access token> -transport sse -addr "http://localhost:8000"
 ```
+
+Cursor/Windsurf configuration:
 
 ```json
 {
