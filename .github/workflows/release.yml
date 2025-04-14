@@ -1,0 +1,78 @@
+name: Manual Multi-Arch Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. v1.0.0)'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goarch: [amd64, arm64, arm/v7, s390x, ppc64le]
+        include:
+          - goarch: amd64
+            goos: linux
+            archlabel: mcp-1panel-linux-amd64
+          - goarch: arm64
+            goos: linux
+            archlabel: mcp-1panel-linux-arm64
+          - goarch: arm/v7
+            goos: linux
+            archlabel: mcp-1panel-linux-armv7
+          - goarch: s390x
+            goos: linux
+            archlabel: mcp-1panel-linux-s390x
+          - goarch: ppc64le
+            goos: linux
+            archlabel: mcp-1panel-linux-ppc64le
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Build binary
+        run: |
+          mkdir -p dist
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 make build
+          cp ./bin/mcp-1panel dist/${{ matrix.archlabel }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.archlabel }}
+          path: dist/${{ matrix.archlabel }}
+
+  release:
+    name: Create GitHub Draft Release
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Flatten artifacts
+        run: |
+          mkdir upload
+          find dist -type f -exec cp {} upload/ \;
+
+      - name: Create GitHub Draft Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: Release ${{ github.event.inputs.version }}
+          draft: true
+          files: upload/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
