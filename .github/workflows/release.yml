@@ -43,7 +43,7 @@ jobs:
         run: |
           mkdir -p dist
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} CGO_ENABLED=0 make build
-          cp ./bin/mcp-1panel dist/${{ matrix.archlabel }}
+          cp ./build/mcp-1panel dist/${{ matrix.archlabel }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
