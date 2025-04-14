@@ -1,64 +1,57 @@
-name: Build and Draft Release
+name: Build & Release MCP-1Panel
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version (e.g. v1.0.0)"
+        description: "Version tag (e.g. v0.1.0)"
         required: true
-        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        goos: [linux]
+        goarch: [amd64, arm64, arm, s390x, ppc64le]
         include:
-          - goos: linux
-            goarch: amd64
-          - goos: linux
-            goarch: arm64
-          - goos: linux
-            goarch: arm
+          - goarch: arm
             goarm: 7
-          - goos: linux
-            goarch: s390x
-          - goos: linux
-            goarch: ppc64le
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.21"
+          go-version: stable
 
-      - name: Build binary
+      - name: Build Binary
         run: |
           mkdir -p build
-          if [ "${{ matrix.goarch }}" = "arm" ]; then
-            CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} GOARM=${{ matrix.goarm }} go build -trimpath -ldflags '-s -w' -o ./build/mcp-1panel-${{ matrix.goarch }}v${{ matrix.goarm }} ./main.go
-          else
-            CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -trimpath -ldflags '-s -w' -o ./build/mcp-1panel-${{ matrix.goarch }} ./main.go
-          fi
+          export GOARM=${{ matrix.goarm || '' }}
+          CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} GOARM=$GOARM \
+          go build -trimpath -ldflags '-s -w' -o ./build/mcp-1panel ./main.go
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: binaries
-          path: build/*
+          name: mcp-1panel-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.goarm && format('v{0}', matrix.goarm) || '' }}
+          path: build/mcp-1panel
 
   release:
     needs: build
     runs-on: ubuntu-latest
+
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          name: binaries
           path: ./release-assets
+
+      - name: List downloaded files
+        run: find ./release-assets -type f
 
       - name: Create Release Draft
         uses: softprops/action-gh-release@v2
@@ -66,4 +59,4 @@ jobs:
           tag_name: ${{ github.event.inputs.version }}
           name: ${{ github.event.inputs.version }}
           draft: true
-          files: ./release-assets/*
+          files: ./release-assets/**/*
