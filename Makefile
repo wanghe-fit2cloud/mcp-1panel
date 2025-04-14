@@ -15,4 +15,4 @@ BIN_NAME=mcp-1panel
 build:
 	mkdir -p $(BUILD_PATH)
 	cd $(BASE_PATH) \
-	&& GOOS=$(GOOS) GOARCH=$(GOARCH) $(GOBUILD) -trimpath -ldflags '-s -w' -o $(BUILD_PATH)/$(BIN_NAME) $(MAIN_PATH)
+	&& CGO_ENABLED=0 GOOS=$(GOOS) GOARCH=$(GOARCH) $(GOBUILD) -trimpath -ldflags '-s -w' -o $(BUILD_PATH)/$(BIN_NAME) $(MAIN_PATH)
