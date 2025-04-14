@@ -26,7 +26,7 @@ jobs:
           - goos: linux
             goarch: ppc64le
 
-    name: Build for ${{ matrix.goarch }}
+    name: Build for ${{ matrix.goos }}-${{ matrix.goarch }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,18 +39,17 @@ jobs:
       - name: Build Binary
         run: |
           mkdir -p build
-          ARCH=${{ matrix.goarch }}
-          if [ "${ARCH}" = "arm" ]; then
-            ARCH="armv${{ matrix.goarm }}"
+          FILE_NAME=mcp-1panel-${{ matrix.goos }}-${{ matrix.goarch }}
+          if [ "${{ matrix.goarch }}" = "arm" ]; then
+            FILE_NAME="${FILE_NAME}v${{ matrix.goarm }}"
           fi
-          OUTPUT_NAME=mcp-1panel-${ARCH}
           CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} GOARM=${{ matrix.goarm || '' }} \
-          go build -trimpath -ldflags '-s -w' -o build/${OUTPUT_NAME} ./main.go
+          go build -trimpath -ldflags '-s -w' -o build/${FILE_NAME} ./main.go
 
       - name: Upload binary artifact
         uses: actions/upload-artifact@v4
         with:
-          name: mcp-1panel-${{ matrix.goarch }}-${{ matrix.goarm || 'default' }}
+          name: ${{ matrix.goos }}-${{ matrix.goarch }}-${{ matrix.goarm || 'default' }}
           path: build/*
 
   release:
