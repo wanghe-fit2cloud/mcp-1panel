@@ -1,66 +1,75 @@
-name: Build & Release MCP-1Panel
+name: Build and Release MCP-1Panel
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version tag (e.g. v0.1.0)"
+        description: 'Release version (e.g. v1.0.0)'
         required: true
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        goos: [linux]
         include:
-          - goarch: amd64
-          - goarch: arm64
-          - goarch: arm
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+          - goos: linux
+            goarch: arm
             goarm: 7
-          - goarch: s390x
-          - goarch: ppc64le
+          - goos: linux
+            goarch: s390x
+          - goos: linux
+            goarch: ppc64le
 
+    name: Build for ${{ matrix.goarch }}
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: stable
+          go-version: '1.21'
 
-      - name: Build Binary with Target Name
+      - name: Build Binary
         run: |
           mkdir -p build
           ARCH=${{ matrix.goarch }}
           if [ "${ARCH}" = "arm" ]; then
             ARCH="armv${{ matrix.goarm }}"
           fi
-          FILENAME=mcp-1panel-${ARCH}
+          OUTPUT_NAME=mcp-1panel-${ARCH}
           CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} GOARM=${{ matrix.goarm || '' }} \
-          go build -trimpath -ldflags '-s -w' -o build/${FILENAME} ./main.go
+          go build -trimpath -ldflags '-s -w' -o build/${OUTPUT_NAME} ./main.go
 
-      - name: Upload artifact
+      - name: Upload binary artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-binaries
+          name: mcp-1panel-${{ matrix.goarch }}-${{ matrix.goarm || 'default' }}
           path: build/*
-          if-no-files-found: error
 
   release:
     needs: build
     runs-on: ubuntu-latest
-
+    name: Create Release
     steps:
-      - name: Download all artifacts
+      - name: Download all binary artifacts
         uses: actions/download-artifact@v4
         with:
-          name: release-binaries
           path: ./release-assets
 
-      - name: List downloaded files
-        run: ls -lh ./release-assets
+      - name: Move all binaries to one folder
+        run: |
+          mkdir -p final-release
+          find ./release-assets -type f -exec mv {} final-release/ \;
+
+      - name: List final files
+        run: ls -lh final-release
 
       - name: Create GitHub Release Draft
         uses: softprops/action-gh-release@v2
@@ -68,4 +77,4 @@ jobs:
           tag_name: ${{ github.event.inputs.version }}
           name: ${{ github.event.inputs.version }}
           draft: true
-          files: ./release-assets/*
+          files: final-release/*
